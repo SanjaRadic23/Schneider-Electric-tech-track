@@ -8,5 +8,6 @@ namespace TechTrack.Helpers
 {
     public class DatabaseConnection
     {
+
     }
 }
