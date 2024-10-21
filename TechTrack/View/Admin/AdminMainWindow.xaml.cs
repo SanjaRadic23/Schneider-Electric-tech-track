@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TechTrack
+namespace TechTrack.View.Admin
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for AdminMainWindow.xaml
     /// </summary>
-    public partial class SignInForm : Window
+    public partial class AdminMainWindow : Window
     {
-        public SignInForm()
+        public AdminMainWindow()
         {
             InitializeComponent();
         }
