@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using TechTrack.View;
+using TechTrack.ViewModel;
+
+namespace TechTrack
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class SignInForm : Window
+    {
+        public SignInFormViewModel signInFormViewModel {  get; set; }
+
+        public SignInForm()
+        {
+            InitializeComponent();
+            signInFormViewModel = new SignInFormViewModel(this);
+            DataContext = signInFormViewModel;
+        }
+        private void RegisterView(object sender, RoutedEventArgs e)
+        {
+            RegisterForm registerForm = new RegisterForm();
+            registerForm.Show();
+            Close();
+        }
+
+    }
+}
