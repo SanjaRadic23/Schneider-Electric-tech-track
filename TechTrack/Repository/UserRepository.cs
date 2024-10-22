@@ -117,8 +117,40 @@ namespace TechTrack.Repository
 
         public User? GetById(int Id)
         {
-            throw new NotImplementedException();
-        }
+                string query = "SELECT * FROM Users WHERE id_user = :IdUser";
 
+                using (IDbConnection connection = DatabaseConncectionPooling.GetConnection())
+                {
+                    connection.Open();
+
+                    using (IDbCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = query;
+
+                        ParameterUtil.AddParameter(command, "IdUser", DbType.Int32);
+
+                        command.Prepare();
+
+                        ParameterUtil.SetParameterValue(command, "IdUser", Id);
+
+                        using (IDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new User(
+                                    reader.GetInt32(0), 
+                                    reader.GetString(1),
+                                    reader.GetString(2),
+                                    reader.GetString(3),
+                                    reader.GetString(4),
+                                    reader.GetString(5)
+                                );
+                            }
+                        }
+                    }
+                }
+
+                return null;
+        }
     }
 }

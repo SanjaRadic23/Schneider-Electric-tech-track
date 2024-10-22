@@ -15,7 +15,6 @@ namespace TechTrack.ViewModel
     public class SignInFormViewModel : INotifyPropertyChanged
     {
         public SignInForm signInForm { get; set; }
-       // public UserAccountRepository userAccountRepository { get; set; }
         public RelayCommand SignInButton => new RelayCommand(execute => SignIn());
 
         private string _username;
@@ -55,7 +54,6 @@ namespace TechTrack.ViewModel
         public SignInFormViewModel(SignInForm signInForm)
         {
             this.signInForm = signInForm;
-           // userAccountRepository = new UserAccountRepository();
         }
 
 
@@ -64,8 +62,8 @@ namespace TechTrack.ViewModel
             var userAccount = UserAccountService.GetInstance().GetByUsername(Username);
             if(userAccount != null)
             {
-                var isCorrect = UserAccountService.GetInstance().ValidateUser(userAccount.Username, userAccount.Password);
-                if (isCorrect)
+                var isCorrect = UserAccountService.GetInstance().ValidateUser(userAccount.Username, signInForm.txtPassword.Password);
+                if(isCorrect)
                 {
                     var user = UserService.GetInstance().GetById(userAccount.UserId);
                     if(user.Role == "admin")
@@ -81,17 +79,14 @@ namespace TechTrack.ViewModel
                 }
                 else
                 {
-                    //ako nije validan user restartovati polje password i username da budu prazna
                     signInForm.txtPassword.Clear();
                     signInForm.txtUsername.Clear();
-                    signInForm.Close();
                 }
             }
             else
             {
                 signInForm.txtPassword.Clear();
                 signInForm.txtUsername.Clear();
-                signInForm.Close();
             }
         }
     }

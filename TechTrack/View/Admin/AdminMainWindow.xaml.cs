@@ -19,9 +19,12 @@ namespace TechTrack.View.Admin
     /// </summary>
     public partial class AdminMainWindow : Window
     {
+        public ProductManagementPage ProductManagementPage { get; set; }
         public AdminMainWindow()
         {
             InitializeComponent();
+            ProductManagementPage = new ProductManagementPage(this);
+            mainFrame.Navigate(ProductManagementPage);
         }
     }
 }
