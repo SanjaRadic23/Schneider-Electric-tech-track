@@ -29,6 +29,10 @@ namespace TechTrack
             _services.AddSingleton<IUserRepository, UserRepository>();
             _services.AddSingleton<UserAccountService>();
             _services.AddSingleton<IUserAccountRepository, UserAccountRepository>();
+            _services.AddSingleton<ProductService>();
+            _services.AddSingleton<IProductRepository, ProductRepository>();
+            _services.AddSingleton<SupplierService>();
+            _services.AddSingleton<ISupplierRepository, SupplierRepository>();
 
             _serviceProvider = _services.BuildServiceProvider();
 

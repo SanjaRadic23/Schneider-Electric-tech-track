@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TechTrack.Domain.Model;
 using TechTrack.Helpers;
+using TechTrack.Service;
 using TechTrack.View;
 
 namespace TechTrack.ViewModel
@@ -123,6 +125,35 @@ namespace TechTrack.ViewModel
         public void Register()
         {
             ValidateConfirmPassword();
+            if (string.IsNullOrEmpty(ConfirmPasswordError))
+            {
+                if(UserAccountService.GetInstance().GetByUsername(Username) == null)
+                {
+                    User user = new User();
+                    user.FirstName = FirstName;
+                    user.LastName = LastName;
+                    user.PhoneNumber = PhoneNumber;
+                    user.Email = Email;
+                    user.Role = RegisterForm.RoleComboBox.SelectionBoxItem.ToString().ToLower();
+
+                    UserService.GetInstance().Add(user);
+
+                    var u = UserService.GetInstance().GetById(user.IdUser);
+
+                    UserAccount userAccount = new UserAccount();
+                    userAccount.UserId = user.IdUser;
+                    userAccount.Username = Username;
+                    userAccount.Password = RegisterForm.PasswordBox.Password;
+
+                    UserAccountService.GetInstance().Add(userAccount);
+                }
+                else
+                {
+                    UsernameError = "Username is already taken. Please choose a different username.";
+                    OnPropertyChanged(nameof(UsernameError));
+                }
+                
+            }
         }
 
         private void ValidateFirstName()

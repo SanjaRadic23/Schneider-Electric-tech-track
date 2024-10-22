@@ -15,6 +15,7 @@ namespace TechTrack.Domain.Model
         public string Email { get; set; }
         public string Role { get; set; }
 
+        public User() { }
         public User(int idUser, string firstName, string lastName, string phoneNumber, string email, string role)
         {
             IdUser = idUser;

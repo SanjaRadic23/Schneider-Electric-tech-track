@@ -13,6 +13,7 @@ namespace TechTrack.Domain.Model
         public string Password { get; set; }
         public int UserId { get; set; }
 
+        public UserAccount() { }
         public UserAccount(int id, string username, string password, int userId)
         {
             Id = id;

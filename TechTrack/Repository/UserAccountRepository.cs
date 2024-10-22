@@ -32,7 +32,7 @@ namespace TechTrack.Repository
 
                 using (IDbCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT MAX(id_account) FROM UserAccounts"; // Dobijanje najveseg Id-a
+                    command.CommandText = "SELECT MAX(id_account) FROM UserAccounts"; // Dobijanje najveceg Id-a
 
                     return Convert.ToInt32(command.ExecuteScalar()) + 1; // Vraca sledeci ID
                 }
@@ -43,8 +43,8 @@ namespace TechTrack.Repository
         {
             int nextId = NextId();
 
-            string query = "INSERT INTO UserAccounts (id_account, username, password, user_id) " +
-                           "VALUES (:Id, :Username, :Password, :UserId)";
+            string query = "INSERT INTO UserAccounts (id_account, username, password_hash, user_id) " +
+                           "VALUES (:Id, :Username, :Password_hash, :UserId)";
 
             using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
             {
@@ -57,7 +57,7 @@ namespace TechTrack.Repository
                     
                     ParameterUtil.AddParameter(command, "Id", DbType.Int32);
                     ParameterUtil.AddParameter(command, "Username", DbType.String);
-                    ParameterUtil.AddParameter(command, "Password", DbType.String);
+                    ParameterUtil.AddParameter(command, "Password_hash", DbType.String);
                     ParameterUtil.AddParameter(command, "UserId", DbType.Int32);
 
                     command.Prepare();
@@ -65,7 +65,7 @@ namespace TechTrack.Repository
                     
                     ParameterUtil.SetParameterValue(command, "Id", nextId);
                     ParameterUtil.SetParameterValue(command, "Username", userAccount.Username);
-                    ParameterUtil.SetParameterValue(command, "Password", PasswordHasher.HashPassword(userAccount.Password));
+                    ParameterUtil.SetParameterValue(command, "Password_hash", PasswordHasher.HashPassword(userAccount.Password));
                     ParameterUtil.SetParameterValue(command, "UserId", userAccount.UserId);
 
                     command.ExecuteNonQuery();
@@ -122,14 +122,7 @@ namespace TechTrack.Repository
             
             using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
             {
-                try
-                {
-                    conn.Open();
-                }
-                catch(Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                }
+                conn.Open();
 
                 string query = "SELECT * FROM UserAccounts WHERE username = :Username";
 
