@@ -8,7 +8,6 @@ using TechTrack.Helpers;
 using TechTrack.Repository;
 using TechTrack.Service;
 using TechTrack.View.Admin;
-using TechTrack.View.Employee;
 
 namespace TechTrack.ViewModel
 {
@@ -68,13 +67,8 @@ namespace TechTrack.ViewModel
                     var user = UserService.GetInstance().GetById(userAccount.UserId);
                     if(user.Role == "admin")
                     {
-                        AdminMainWindow adminMainWindow = new AdminMainWindow();
+                        AdminMainWindow adminMainWindow = new AdminMainWindow(userAccount);
                         adminMainWindow.Show();
-                    }
-                    else if(user.Role == "employee")
-                    {
-                        EmployeeMainWindow employeeMainWindow = new EmployeeMainWindow();
-                        employeeMainWindow.Show();
                     }
                 }
                 else

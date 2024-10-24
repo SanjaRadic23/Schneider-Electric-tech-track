@@ -36,5 +36,13 @@ namespace TechTrack.Service
         {
             return SupplierRepository.Delete(id);
         }
+        public List<Supplier> SearchSuppliers(string searchTerm)
+        {
+            return SupplierRepository.SearchSuppliers(searchTerm);
+        }
+        public void Update(Supplier supplier)
+        {
+            SupplierRepository.Update(supplier);
+        }
     }
 }

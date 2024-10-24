@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TechTrack.Domain.Model;
+using TechTrack.ViewModel.Admin;
 
 namespace TechTrack.View.Admin
 {
@@ -20,11 +22,39 @@ namespace TechTrack.View.Admin
     public partial class AdminMainWindow : Window
     {
         public ProductManagementPage ProductManagementPage { get; set; }
-        public AdminMainWindow()
+        public ProductManagementViewModel ProductManagementViewModel { get; set; }
+        public UserAccount UserAccount { get; set; }
+        public AdminMainWindow(UserAccount userAccount)
         {
             InitializeComponent();
-            ProductManagementPage = new ProductManagementPage(this);
+            UserAccount = userAccount;
+            ProductManagementPage = new ProductManagementPage(this, userAccount);
             mainFrame.Navigate(ProductManagementPage);
+
+        }
+
+        private void ProductPageClick(object sender, RoutedEventArgs e)
+        {
+            ProductManagementViewModel = new ProductManagementViewModel(ProductManagementPage, UserAccount);
+            ProductManagementViewModel.LoadProducts();
+            ProductManagementPage = new ProductManagementPage(this, UserAccount);
+            mainFrame.Navigate(ProductManagementPage);
+        }
+
+        private void SupplierPageClick(object sender, RoutedEventArgs e)
+        {
+            SupplierManagementPage supplierManagementPage = new SupplierManagementPage(this, UserAccount);
+            mainFrame.Navigate(supplierManagementPage);
+        }
+
+        private void OrderPageClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ReportPageClick(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

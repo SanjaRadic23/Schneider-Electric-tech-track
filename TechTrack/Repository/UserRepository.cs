@@ -31,9 +31,9 @@ namespace TechTrack.Repository
 
                 using (IDbCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT MAX(id_user) FROM Users"; // Dobijanje najveseg Id-a
+                    command.CommandText = "SELECT MAX(id_user) FROM Users"; 
 
-                    return Convert.ToInt32(command.ExecuteScalar()) + 1; // Vraca sledeci ID
+                    return Convert.ToInt32(command.ExecuteScalar()) + 1; 
                 }
             }
         }
