@@ -17,5 +17,6 @@ namespace TechTrack.Domain.IRepository
         Product? GetByNameAndSupplierId(string name, int id);
         List<Product> Search(string searchTerm);
         void Update(Product product);
+        Product? GetBySupplierId(int Id);
     }
 }

@@ -24,25 +24,28 @@ namespace TechTrack.View.Admin
     {
         public ProductManagementViewModel ProductManagementViewModel { get; set; }
 
+        public UserAccount UserAccount { get; set; }
         public AdminMainWindow AdminMainWindow { get; set; }
-        public ProductManagementPage(AdminMainWindow adminMainWindow)
+        public ProductManagementPage(AdminMainWindow adminMainWindow, UserAccount userAccount)
         {
             InitializeComponent();
             MainGrid.Focus();
+            UserAccount = userAccount;
             AdminMainWindow=adminMainWindow;
-            ProductManagementViewModel = new ProductManagementViewModel(this);
+            ProductManagementViewModel = new ProductManagementViewModel(this, UserAccount);
             DataContext = ProductManagementViewModel;
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
-            ProductManagementPage productManagementPage = new ProductManagementPage(AdminMainWindow);
+            ProductManagementPage productManagementPage = new ProductManagementPage(AdminMainWindow, UserAccount);
             AdminMainWindow.mainFrame.Navigate(productManagementPage);
         }
 
         private void ManageProductButton_Click(object sender, RoutedEventArgs e)
         {
-            ManageProductsPage manageProductsPage = new ManageProductsPage(AdminMainWindow);
+            
+            ManageProductsPage manageProductsPage = new ManageProductsPage(AdminMainWindow, UserAccount);
             AdminMainWindow.mainFrame.Navigate(manageProductsPage);
         }
     }

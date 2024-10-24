@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TechTrack.Domain.Model;
 using TechTrack.ViewModel.Admin;
 
 namespace TechTrack.View.Admin
@@ -22,24 +23,26 @@ namespace TechTrack.View.Admin
     public partial class ManageProductsPage : Page
     {
         public AdminMainWindow AdminMainWindow { get; set; }
+        public UserAccount UserAccount { get; set; }
         public ManageProductsViewModel manageProductsViewModel { get; set; }
-        public ManageProductsPage(AdminMainWindow adminMainWindow)
+        public ManageProductsPage(AdminMainWindow adminMainWindow, UserAccount userAccount)
         {
             InitializeComponent();
+            UserAccount = userAccount;
             AdminMainWindow = adminMainWindow;
-            manageProductsViewModel = new ManageProductsViewModel(this);
+            manageProductsViewModel = new ManageProductsViewModel(this, UserAccount);
             DataContext = manageProductsViewModel;
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
-            ProductManagementPage productManagementPage = new ProductManagementPage(AdminMainWindow);
+            ProductManagementPage productManagementPage = new ProductManagementPage(AdminMainWindow, UserAccount);
             AdminMainWindow.mainFrame.Navigate(productManagementPage);
         }
 
         private void ManageProductButton_Click(object sender, RoutedEventArgs e)
         {
-            ManageProductsPage manageProductsPage = new ManageProductsPage(AdminMainWindow);
+            ManageProductsPage manageProductsPage = new ManageProductsPage(AdminMainWindow, UserAccount);
             AdminMainWindow.mainFrame.Navigate(manageProductsPage);
         }
     }

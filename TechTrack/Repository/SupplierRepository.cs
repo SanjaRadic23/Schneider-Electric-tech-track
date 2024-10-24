@@ -23,6 +23,7 @@ namespace TechTrack.Repository
         public void Add(Supplier supplier)
         {
             int nextId = NextId();
+            supplier.IdSupplier = nextId;
 
             string query = "INSERT INTO Suppliers (id_supplier, name, phone_number, email, address) " +
                            "VALUES (:Id, :Name, :PhoneNumber, :Email, :Address)";
@@ -43,7 +44,7 @@ namespace TechTrack.Repository
 
                     command.Prepare();
 
-                    ParameterUtil.SetParameterValue(command, "Id", nextId);
+                    ParameterUtil.SetParameterValue(command, "Id", supplier.IdSupplier);
                     ParameterUtil.SetParameterValue(command, "Name", supplier.Name);
                     ParameterUtil.SetParameterValue(command, "PhoneNumber", supplier.PhoneNumber);
                     ParameterUtil.SetParameterValue(command, "Email", supplier.Email);
@@ -56,7 +57,18 @@ namespace TechTrack.Repository
 
         public bool Delete(int id)
         {
-            string query = "DELETE FROM Suppliers WHERE id_supplier = :Id";
+            string query = @"
+                    BEGIN
+                        DELETE FROM TechProducts WHERE supplier_id = :Id;
+                        
+                        DELETE FROM Suppliers WHERE id_supplier = :Id;
+
+                        COMMIT;
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            ROLLBACK;
+                            RAISE;
+                    END;";
 
             using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
             {
@@ -73,6 +85,7 @@ namespace TechTrack.Repository
                 }
             }
         }
+
 
         public List<Supplier> GetAll()
         {
@@ -157,5 +170,90 @@ namespace TechTrack.Repository
                 }
             }
         }
+
+        public List<Supplier> SearchSuppliers(string searchTerm)
+        {
+            List<Supplier> suppliers = new List<Supplier>();
+
+            string query = @"SELECT * FROM Suppliers 
+                     WHERE LOWER(name) LIKE '%' || :SearchTerm || '%' 
+                     OR LOWER(phone_number) LIKE '%' || :SearchTerm || '%' 
+                     OR LOWER(email) LIKE '%' || :SearchTerm || '%' 
+                     OR LOWER(address) LIKE '%' || :SearchTerm || '%'";
+
+            using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
+            {
+                conn.Open();
+
+                using (IDbCommand command = conn.CreateCommand())
+                {
+                    command.CommandText = query;
+
+                    ParameterUtil.AddParameter(command, "SearchTerm", DbType.String);
+                    ParameterUtil.SetParameterValue(command, "SearchTerm", searchTerm.ToLower());
+
+                    using (IDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            suppliers.Add(new Supplier(
+                                reader.GetInt32(0),  
+                                reader.GetString(1), 
+                                reader.GetString(2), 
+                                reader.GetString(3), 
+                                reader.GetString(4) 
+                            ));
+                        }
+                    }
+                }
+            }
+
+            return suppliers;
+        }
+        public void Update(Supplier supplier)
+        {
+            string query = @"
+                    BEGIN
+                        UPDATE Suppliers 
+                        SET 
+                            name = COALESCE(NULLIF(:Name, ''), name),
+                            phone_number = COALESCE(NULLIF(:PhoneNumber, ''), phone_number),
+                            email = COALESCE(NULLIF(:Email, ''), email),
+                            address = COALESCE(NULLIF(:Address, ''), address)
+                        WHERE 
+                            id_supplier = :Id;
+
+                        COMMIT;
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            ROLLBACK;
+                            RAISE;
+                    END;";
+
+            using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
+            {
+                conn.Open();
+
+                using (IDbCommand command = conn.CreateCommand())
+                {
+                    command.CommandText = query;
+
+                    ParameterUtil.AddParameter(command, "Name", DbType.String);
+                    ParameterUtil.AddParameter(command, "PhoneNumber", DbType.String);
+                    ParameterUtil.AddParameter(command, "Email", DbType.String);
+                    ParameterUtil.AddParameter(command, "Address", DbType.String);
+                    ParameterUtil.AddParameter(command, "Id", DbType.Int32);
+
+                    ParameterUtil.SetParameterValue(command, "Name", supplier.Name);
+                    ParameterUtil.SetParameterValue(command, "PhoneNumber", supplier.PhoneNumber);
+                    ParameterUtil.SetParameterValue(command, "Email", supplier.Email);
+                    ParameterUtil.SetParameterValue(command, "Address", supplier.Address);
+                    ParameterUtil.SetParameterValue(command, "Id", supplier.IdSupplier);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }

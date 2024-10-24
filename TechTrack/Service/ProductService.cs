@@ -51,5 +51,10 @@ namespace TechTrack.Service
         {
             ProductRepository.Update(newProduct);
         }
+
+        public Product? GetBySupplierId(int Id)
+        {
+            return ProductRepository.GetBySupplierId(Id);
+        }
     }
 }

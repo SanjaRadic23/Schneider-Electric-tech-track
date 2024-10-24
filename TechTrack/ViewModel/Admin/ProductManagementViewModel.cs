@@ -21,16 +21,22 @@ namespace TechTrack.ViewModel.Admin
         public ObservableCollection<Product> Products { get; set; }
         public ObservableCollection<Supplier> Suppliers { get; set; }
         public Supplier SelectedSupplierId { get; set; }
+        public UserAccount UserAccount { get; set; }
         public RelayCommand SubmitCommand => new RelayCommand(execute => Submit(), canExecute => CanSubmit());
-        public ProductManagementViewModel(ProductManagementPage productManagementPage) 
+        public ProductManagementViewModel(ProductManagementPage productManagementPage, UserAccount userAccount) 
         {
             this.productManagementPage = productManagementPage;
             Products = new ObservableCollection<Product>();
             Suppliers = new ObservableCollection<Supplier>();
+            UserAccount = userAccount;
             LoadProducts();
             foreach (Supplier s in SupplierService.GetInstance().GetAll())
             {
                 Suppliers.Add(s);
+            }
+            if(UserService.GetInstance().GetById(userAccount.UserId).Role.ToLower() == "employee")
+            {
+                productManagementPage.ManageProductButton.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -187,7 +193,7 @@ namespace TechTrack.ViewModel.Admin
                 MessageBox.Show("A product with that name and supplier already exists.");
             }
         }
-        private void LoadProducts()
+        public void LoadProducts()
         {
             Products.Clear();
             foreach (Product p in ProductService.GetInstance().GetAll())

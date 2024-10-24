@@ -146,6 +146,10 @@ namespace TechTrack.ViewModel
                     userAccount.Password = RegisterForm.PasswordBox.Password;
 
                     UserAccountService.GetInstance().Add(userAccount);
+
+                    SignInForm signInForm = new SignInForm();
+                    signInForm.Show();
+                    RegisterForm.Close();
                 }
                 else
                 {

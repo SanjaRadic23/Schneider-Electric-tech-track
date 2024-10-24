@@ -112,6 +112,42 @@ namespace TechTrack.Repository
             return products;
         }
 
+        public Product? GetBySupplierId(int Id)
+        {
+            Product? product = null;
+
+            string query = "SELECT * FROM TechProducts WHERE supplier_id = :Id";
+
+            using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
+            {
+                conn.Open();
+
+                using (IDbCommand command = conn.CreateCommand())
+                {
+                    command.CommandText = query;
+
+                    ParameterUtil.AddParameter(command, "Id", DbType.Int32);
+                    ParameterUtil.SetParameterValue(command, "Id", Id);
+
+                    using (IDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            product = new Product(
+                                reader.GetInt32(0),
+                                reader.GetString(1),
+                                reader.GetString(2),
+                                reader.GetInt32(3),
+                                reader.GetDecimal(4),
+                                reader.GetInt32(5)
+                            );
+                        }
+                    }
+                }
+            }
+
+            return product;
+        }
         public Product? GetById(int Id)
         {
             Product? product = null;

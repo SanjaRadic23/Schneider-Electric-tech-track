@@ -1,0 +1,84 @@
+﻿<Page x:Class="TechTrack.View.Admin.ManageSupplierPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TechTrack.View.Admin"
+      mc:Ignorable="d" 
+       d:DesignHeight="800" d:DesignWidth="1520"
+      Title="ManageSupplierPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="1" Content="Supplier Management" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20 0 0 0" FontWeight="Medium" FontSize="40"/>
+        <Grid Grid.Row="1" Grid.Column="1" Background="#DDDDDD" Focusable="True" x:Name="MainGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="4*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="42 0 0 0" HorizontalAlignment="Left" Height="80" Width="auto" Background="WhiteSmoke" CornerRadius="15">
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="AddSupplierButton" Content="Add New Suppliers" Width="200" Height="45" Margin="20 0 10 0" BorderThickness="0"  VerticalAlignment="Center" FontSize="18" Click="AddSupplier_Click"   ></Button>
+                    <Button x:Name="ManageSupplierButton" Content="Manage Suppliers" Width="200" Height="45" Margin="0 0 20 0" BorderThickness="0" VerticalAlignment="Center" FontSize="18" Click="ManageSupplier_Click" ></Button>
+                </StackPanel>
+            </Border>
+            <TextBox Name="searchTxtBox" Grid.Row="1" Margin="0 0 20 0" Grid.Column="2" Height="30" FontSize="20" VerticalAlignment="Top"></TextBox>
+            <Button Grid.Column="2" Grid.Row="1" Content="Search" Command="{Binding SearchButton}" FontSize="20" Height="30" Width="80" HorizontalAlignment="Right" Margin="0 0 20 100"></Button>
+            <Button Grid.Column="2" Grid.Row="1" Content="Delete" Command="{Binding DeleteButton}" FontSize="20" Height="30" Width="80" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0 0 0 10"></Button>
+            <StackPanel Grid.Row="2" Grid.Column="0" Margin="20">
+                <TextBlock Text="Update Supplier" FontWeight="Bold" FontSize="30"/>
+
+                <TextBlock Text="Name:" FontSize="18"/>
+                <TextBox x:Name="SupplierNameTextBox" Width="200" Height="25"  HorizontalAlignment="Left"
+                Text="{Binding SupplierName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Phone Number:" FontSize="18"/>
+                <TextBox x:Name="SupplierPhoneTextBox" Width="200" Height="25"  HorizontalAlignment="Left"
+                Text="{Binding SupplierPhone, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Email:" FontSize="18"/>
+                <TextBox x:Name="SupplierEmailTextBox" Width="200" Height="25"  HorizontalAlignment="Left"
+                Text="{Binding SupplierEmail, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Address:" FontSize="18"/>
+                <TextBox x:Name="SupplierAddressTextBox" Width="200" Height="25" HorizontalAlignment="Left"
+                Text="{Binding SupplierAddress, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="20">
+                <TextBlock Text="Supplier's Product" FontWeight="Bold" FontSize="30" Margin="0 0 0 5"/>
+
+                <TextBlock Text="Name:" FontSize="18"/>
+                <TextBox x:Name="ProductNameTextBox" Width="200" Height="25" Margin="0 0 0 5" HorizontalAlignment="Left"
+                     Text="{Binding ProductName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Description:" FontSize="18"/>
+                <TextBox x:Name="ProductDescriptionTextBox" Width="200" Height="25" Margin="0 0 0 5" HorizontalAlignment="Left"
+                     Text="{Binding ProductDescription, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text="Price:" FontSize="18"/>
+                <TextBox x:Name="ProductPriceTextBox" Width="200" Height="25" Margin="0 0 0 5" HorizontalAlignment="Left"
+                    Text="{Binding ProductPrice, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button x:Name="SubmitProductButton" Command="{Binding SubmitCommand}" FontSize="20" Content="Submit" Width="200" HorizontalAlignment="Left" Height="40" Margin="0 10 0 0" />
+            </StackPanel>
+            <DataGrid x:Name="ProductsDataGrid" SelectedItem="{Binding SelectedSupplierId}" SelectedValuePath="Id" ItemsSource="{Binding Suppliers, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserAddRows="False" Margin="10">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Supplier Name" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Phone Number" Binding="{Binding PhoneNumber}" />
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" />
+                    <DataGridTextColumn Header="Address" Binding="{Binding Address}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Page>

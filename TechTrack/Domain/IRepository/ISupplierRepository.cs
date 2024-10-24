@@ -14,5 +14,7 @@ namespace TechTrack.Domain.IRepository
         Supplier? GetById(int Id);
         int NextId();
         bool Delete(int id);
+        List<Supplier> SearchSuppliers(string searchTerm);
+        void Update(Supplier supplier);
     }
 }

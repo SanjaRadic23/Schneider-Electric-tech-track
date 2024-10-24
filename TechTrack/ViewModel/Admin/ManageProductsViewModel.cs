@@ -20,11 +20,12 @@ namespace TechTrack.ViewModel.Admin
         public ObservableCollection<Supplier> Suppliers { get; set; }
         public Supplier SelectedSupplierId { get; set; }
         //public Product SelectedProductId { get; set; }
+        public UserAccount UserAccount { get; set; }
         public RelayCommand SubmitCommand => new RelayCommand(execute => Submit(), canExecute => CanSubmit());
         public RelayCommand SearchButton => new RelayCommand(execute => Search());
 
         public RelayCommand DeleteButton => new RelayCommand(execute => Delete(), canExecute => CanDelete());
-        public ManageProductsViewModel(ManageProductsPage manageProductsPage)
+        public ManageProductsViewModel(ManageProductsPage manageProductsPage, UserAccount userAccount)
         {
             ManageProductsPage = manageProductsPage;
             Products = new ObservableCollection<Product>();
@@ -34,6 +35,8 @@ namespace TechTrack.ViewModel.Admin
             {
                 Suppliers.Add(s);
             }
+
+            UserAccount = userAccount;
         }
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string str)
