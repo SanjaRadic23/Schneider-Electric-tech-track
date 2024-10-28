@@ -193,6 +193,7 @@ namespace TechTrack.ViewModel.Admin
             SelectedOrder.Status = SelectedOrderStatus;
             SelectedOrder.CreationDate = DateTime.Now;
             PurchaseOrderService.GetInstance().Update(SelectedOrder);
+            LoadOrders();
         }
     }
 }

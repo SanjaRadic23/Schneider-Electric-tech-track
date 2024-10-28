@@ -186,7 +186,10 @@ namespace TechTrack.ViewModel.Admin
         }
         private void UpdateOrderStatus()
         {
-            
+            SelectedOrder.Status = SelectedOrderStatus;
+            SelectedOrder.CreationDate = DateTime.Now;
+            UserOrderService.GetInstance().Update(SelectedOrder);
+            LoadOrders();
         }
     }
 }

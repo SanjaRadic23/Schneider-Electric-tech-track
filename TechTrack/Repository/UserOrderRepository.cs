@@ -146,5 +146,49 @@ namespace TechTrack.Repository
             }
             return null;
         }
+
+        public void Update(UserOrder userOrder)
+        {
+            string query = @"
+                            BEGIN
+                                UPDATE UsersOrders
+                                SET 
+                                    creation_date = COALESCE(NULLIF(:CreationDate, TO_DATE('', 'YYYY-MM-DD')), creation_date),
+                                    status = COALESCE(NULLIF(:Status, ''), status),
+                                    user_id = COALESCE(NULLIF(:UserId, -1), user_id)
+                                WHERE 
+                                    id_order = :IdOrder;
+
+                                COMMIT;
+                            EXCEPTION
+                                WHEN OTHERS THEN
+                                    ROLLBACK;
+                                    RAISE;
+                            END;";
+
+            using (IDbConnection connection = DatabaseConncectionPooling.GetConnection())
+            {
+                connection.Open();
+
+                using (IDbCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = query;
+
+                    ParameterUtil.AddParameter(command, "CreationDate", DbType.Date);
+                    ParameterUtil.AddParameter(command, "Status", DbType.String);
+                    ParameterUtil.AddParameter(command, "UserId", DbType.Int32);
+                    ParameterUtil.AddParameter(command, "IdOrder", DbType.Int32);
+
+                    command.Prepare();
+
+                    ParameterUtil.SetParameterValue(command, "CreationDate", userOrder.CreationDate);
+                    ParameterUtil.SetParameterValue(command, "Status", userOrder.Status);
+                    ParameterUtil.SetParameterValue(command, "UserId", userOrder.UserId);
+                    ParameterUtil.SetParameterValue(command, "IdOrder", userOrder.IdOrder);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

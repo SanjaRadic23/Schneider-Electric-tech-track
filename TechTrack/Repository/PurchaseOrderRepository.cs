@@ -145,11 +145,25 @@ namespace TechTrack.Repository
             }
             return null;
         }
+
         public void Update(PurchaseOrder purchaseOrder)
         {
-            string query = "UPDATE PurchasesOrders " +
-                           "SET creation_date = to_date(:CreationDate, 'YYYY-MM-DD'), status = :Status, user_id = :UserId " +
-                           "WHERE id_order = :IdOrder";
+            string query = @"
+                            BEGIN
+                                UPDATE PurchasesOrders
+                                SET 
+                                    creation_date = COALESCE(NULLIF(:CreationDate, TO_DATE('', 'YYYY-MM-DD')), creation_date),
+                                    status = COALESCE(NULLIF(:Status, ''), status),
+                                    user_id = COALESCE(NULLIF(:UserId, -1), user_id)
+                                WHERE 
+                                    id_order = :IdOrder;
+
+                                COMMIT;
+                            EXCEPTION
+                                WHEN OTHERS THEN
+                                    ROLLBACK;
+                                    RAISE;
+                            END;";
 
             using (IDbConnection connection = DatabaseConncectionPooling.GetConnection())
             {
@@ -159,17 +173,17 @@ namespace TechTrack.Repository
                 {
                     command.CommandText = query;
 
-                    ParameterUtil.AddParameter(command, "IdOrder", DbType.Int32);
-                    ParameterUtil.AddParameter(command, "CreationDate", DbType.String);
+                    ParameterUtil.AddParameter(command, "CreationDate", DbType.Date);
                     ParameterUtil.AddParameter(command, "Status", DbType.String);
                     ParameterUtil.AddParameter(command, "UserId", DbType.Int32);
+                    ParameterUtil.AddParameter(command, "IdOrder", DbType.Int32);
 
                     command.Prepare();
 
-                    ParameterUtil.SetParameterValue(command, "IdOrder", purchaseOrder.IdOrder);
-                    ParameterUtil.SetParameterValue(command, "CreationDate", purchaseOrder.CreationDate.ToString("yyyy-MM-dd"));
+                    ParameterUtil.SetParameterValue(command, "CreationDate", purchaseOrder.CreationDate);
                     ParameterUtil.SetParameterValue(command, "Status", purchaseOrder.Status);
                     ParameterUtil.SetParameterValue(command, "UserId", purchaseOrder.UserId);
+                    ParameterUtil.SetParameterValue(command, "IdOrder", purchaseOrder.IdOrder);
 
                     command.ExecuteNonQuery();
                 }

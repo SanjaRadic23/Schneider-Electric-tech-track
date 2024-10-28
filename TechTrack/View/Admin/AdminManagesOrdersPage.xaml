@@ -12,6 +12,7 @@
     <Page.Resources>
         <local1:SupplierIdToSupplierName x:Key="SupplierIdToSupplierName"/>
         <local1:UserOrderItemsConverter x:Key="uOrderItemsConverter"/>
+        <local1:ProductIdToProductName x:Key="ProductIdToProductName"/>
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -100,9 +101,20 @@
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Vertical" Margin="5">
-                                                <TextBlock Text="{Binding ProductId}"/>
-                                                <TextBlock Text="{Binding Quantity}"/>
-                                                <TextBlock Text="{Binding TotalPrice, StringFormat='{}{0} EUR'}"/>
+                                                <TextBlock>
+                                                    <Run Text="Product Name: " />
+                                                    <Run Text="{Binding ProductId, Converter={StaticResource ProductIdToProductName}}" />  
+                                                </TextBlock>
+
+                                                <TextBlock>
+                                                    <Run Text="Quantity: " />
+                                                    <Run Text="{Binding Quantity}" />
+                                                </TextBlock>
+
+                                                <TextBlock>
+                                                    <Run Text="Total Price: " />
+                                                    <Run Text="{Binding TotalPrice, StringFormat='{}{0} EUR'}" />
+                                                </TextBlock>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
