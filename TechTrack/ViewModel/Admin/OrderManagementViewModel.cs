@@ -89,8 +89,7 @@ namespace TechTrack.ViewModel.Admin
             Products.Clear();
             foreach (Product p in ProductService.GetInstance().GetAll())
             {
-                if(p.Quantity > 0)
-                    Products.Add(p);
+                Products.Add(p);
             }
         }
         public void LoadOrders()
@@ -140,43 +139,45 @@ namespace TechTrack.ViewModel.Admin
         {
             if (AddProducts.Count > 0)
             {
-                PurchaseOrder purchaseOrder = new PurchaseOrder();
-                purchaseOrder.CreationDate = DateTime.Now;
-                purchaseOrder.Status = "created";
-                purchaseOrder.UserId = UserAccount.UserId;
+                foreach (var product in AddProducts)
+                {
+                    var qua = ProductService.GetInstance().GetById(product.IdProduct).Quantity;
+                    int.TryParse(OrderManagementPage.QuantityTextBox.Text, out int quantity);
+                }
+
+                PurchaseOrder purchaseOrder = new PurchaseOrder
+                {
+                    CreationDate = DateTime.Now,
+                    Status = "created",
+                    UserId = UserAccount.UserId
+                };
 
                 PurchaseOrderService.GetInstance().Add(purchaseOrder);
 
                 foreach (var product in AddProducts)
                 {
-                    var qua = ProductService.GetInstance().GetById(product.IdProduct).Quantity;
                     int.TryParse(OrderManagementPage.QuantityTextBox.Text, out int quantity);
-                    if (qua - quantity >= 0)
+
+                    PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem
                     {
-                        var o = PurchaseOrderService.GetInstance().GetById(purchaseOrder.IdOrder);
+                        PurchaseOrderId = purchaseOrder.IdOrder,
+                        ProductId = product.IdProduct,
+                        Quantity = quantity,
+                        TotalPrice = product.Price * quantity
+                    };
 
-                        PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem();
-                        purchaseOrderItem.PurchaseOrderId = o.IdOrder;
-                        purchaseOrderItem.ProductId = product.IdProduct;
-                        purchaseOrderItem.Quantity = quantity;
-                        purchaseOrderItem.TotalPrice = (product.Price * quantity);
+                    PurchaseOrderItemService.GetInstance().Add(purchaseOrderItem);
 
-                        PurchaseOrderItemService.GetInstance().Add(purchaseOrderItem);
-
-                        var p = ProductService.GetInstance().GetById(product.IdProduct);
-                        p.Quantity = p.Quantity - quantity;
-                        ProductService.GetInstance().Update(p);
-                    }
-                    else
-                    {
-                        MessageBox.Show("The product" + product.Name + " is out of stock.");
-                    }
+                    var p = ProductService.GetInstance().GetById(product.IdProduct);
+                    p.Quantity += quantity;
+                    ProductService.GetInstance().Update(p);
                 }
 
                 AddProducts.Clear();
                 totalPrice = 0;
                 OrderManagementPage.TotalPriceTextBlock.Text = "0.00 EUR";
                 LoadOrders();
+                LoadProducts();
             }
         }
         private bool CanAddOrderItem()
@@ -194,6 +195,7 @@ namespace TechTrack.ViewModel.Admin
             SelectedOrder.CreationDate = DateTime.Now;
             PurchaseOrderService.GetInstance().Update(SelectedOrder);
             LoadOrders();
+            LoadProducts();
         }
     }
 }

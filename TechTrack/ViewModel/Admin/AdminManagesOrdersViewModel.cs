@@ -136,45 +136,55 @@ namespace TechTrack.ViewModel.Admin
         {
             if (AddProducts.Count > 0)
             {
-                UserOrder userOrder = new UserOrder();
-                userOrder.CreationDate = DateTime.Now;
-                userOrder.Status = "created";
-                userOrder.UserId = UserAccount.UserId;
+                // Provera da li ima dovoljno svih proizvoda pre kreiranja korisničke porudžbine
+                foreach (var product in AddProducts)
+                {
+                    var qua = ProductService.GetInstance().GetById(product.IdProduct).Quantity;
+                    int.TryParse(AdminManagesOrdersPage.QuantityTextBox.Text, out int quantity);
+
+                    if (qua - quantity < 0)
+                    {
+                        MessageBox.Show($"The product {product.Name} is out of stock.");
+                        return;  
+                    }
+                }
+
+                UserOrder userOrder = new UserOrder
+                {
+                    CreationDate = DateTime.Now,
+                    Status = "created",
+                    UserId = UserAccount.UserId
+                };
 
                 UserOrderService.GetInstance().Add(userOrder);
 
                 foreach (var product in AddProducts)
                 {
-                    var qua = ProductService.GetInstance().GetById(product.IdProduct).Quantity;
                     int.TryParse(AdminManagesOrdersPage.QuantityTextBox.Text, out int quantity);
-                    if (qua - quantity >= 0)
+
+                    UserOrderItem userOrderItem = new UserOrderItem
                     {
-                        var o = UserOrderService.GetInstance().GetById(userOrder.IdOrder);
+                        UserOrderId = userOrder.IdOrder, 
+                        ProductId = product.IdProduct,
+                        Quantity = quantity,
+                        TotalPrice = product.Price * quantity
+                    };
 
-                        UserOrderItem userOrderItem = new UserOrderItem();
-                        userOrderItem.UserOrderId = o.IdOrder;
-                        userOrderItem.ProductId = product.IdProduct;
-                        userOrderItem.Quantity = quantity;
-                        userOrderItem.TotalPrice = (product.Price * quantity);
+                    UserOrderItemService.GetInstance().Add(userOrderItem);
 
-                        UserOrderItemService.GetInstance().Add(userOrderItem);
-
-                        var p = ProductService.GetInstance().GetById(product.IdProduct);
-                        p.Quantity = p.Quantity - quantity;
-                        ProductService.GetInstance().Update(p);
-                    }
-                    else
-                    {
-                        MessageBox.Show("The product" + product.Name + " is out of stock.");
-                    }
+                    var p = ProductService.GetInstance().GetById(product.IdProduct);
+                    p.Quantity -= quantity; 
+                    ProductService.GetInstance().Update(p);
                 }
 
                 AddProducts.Clear();
                 totalPrice = 0;
                 AdminManagesOrdersPage.TotalPriceTextBlock.Text = "0.00 EUR";
                 LoadOrders();
+                LoadProducts();
             }
         }
+
         private bool CanAddOrderItem()
         {
             return AdminManagesOrdersPage.ProductListBox.SelectedItem != null &&
