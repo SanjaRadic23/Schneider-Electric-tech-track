@@ -47,5 +47,10 @@ namespace TechTrack.Service
         {
             return UserOrderRepository.NextId();
         }
+
+        public void Update(UserOrder userOrder)
+        {
+            UserOrderRepository.Update(userOrder);
+        }
     }
 }

@@ -14,5 +14,6 @@ namespace TechTrack.Domain.IRepository
         UserOrder? GetById(int Id);
         int NextId();
         bool Delete(int id);
+        void Update(UserOrder userOrder);
     }
 }
