@@ -33,6 +33,14 @@ namespace TechTrack
             _services.AddSingleton<IProductRepository, ProductRepository>();
             _services.AddSingleton<SupplierService>();
             _services.AddSingleton<ISupplierRepository, SupplierRepository>();
+            _services.AddSingleton<UserOrderService>();
+            _services.AddSingleton<IUserOrderRepository, UserOrderRepository>();
+            _services.AddSingleton<UserOrderItemService>();
+            _services.AddSingleton<IUserOrderItemRepository, UserOrderItemRepository>();
+            _services.AddSingleton<PurchaseOrderService>();
+            _services.AddSingleton<IPurchaseOrderRepository, PurchaseOrderRepository>();
+            _services.AddSingleton<PurchaseOrderItemService>();
+            _services.AddSingleton<IPurchaseOrderItemRepository, PurchaseOrderItemRepository>();
 
             _serviceProvider = _services.BuildServiceProvider();
 
