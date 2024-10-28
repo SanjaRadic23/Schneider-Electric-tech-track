@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using TechTrack.Domain.Model;
 using TechTrack.Helpers;
@@ -201,5 +202,6 @@ namespace TechTrack.ViewModel.Admin
                 Products.Add(p);
             }
         }
+
     }
 }

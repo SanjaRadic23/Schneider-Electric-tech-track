@@ -49,7 +49,8 @@ namespace TechTrack.View.Admin
 
         private void OrderPageClick(object sender, RoutedEventArgs e)
         {
-
+            OrderManagementPage orderManagementPage = new OrderManagementPage(this, UserAccount);
+            mainFrame.Navigate(orderManagementPage);
         }
 
         private void ReportPageClick(object sender, RoutedEventArgs e)

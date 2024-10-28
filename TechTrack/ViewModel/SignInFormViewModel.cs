@@ -59,17 +59,18 @@ namespace TechTrack.ViewModel
         public void SignIn() 
         {
             var userAccount = UserAccountService.GetInstance().GetByUsername(Username);
-            if(userAccount != null)
+            if (userAccount != null)
             {
                 var isCorrect = UserAccountService.GetInstance().ValidateUser(userAccount.Username, signInForm.txtPassword.Password);
-                if(isCorrect)
+                if (isCorrect)
                 {
                     var user = UserService.GetInstance().GetById(userAccount.UserId);
-                    if(user.Role == "admin")
+                    if (user.Role == "admin" || user.Role == "employee")
                     {
                         AdminMainWindow adminMainWindow = new AdminMainWindow(userAccount);
                         adminMainWindow.Show();
                     }
+                    
                 }
                 else
                 {
