@@ -44,5 +44,9 @@ namespace TechTrack.Service
         {
             SupplierRepository.Update(supplier);
         }
+        public bool DeleteSupplier(int id)
+        {
+            return SupplierRepository.DeleteSupplier(id);
+        }
     }
 }

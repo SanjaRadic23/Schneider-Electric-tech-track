@@ -137,9 +137,20 @@ namespace TechTrack.ViewModel.Admin
                     SupplierPhone = _selectedSupplier.PhoneNumber;
                     SupplierEmail = _selectedSupplier.Email;
                     SupplierAddress = _selectedSupplier.Address;
-                    ProductName = ProductService.GetInstance().GetBySupplierId(_selectedSupplier.IdSupplier).Name;
-                    ProductDescription = ProductService.GetInstance().GetBySupplierId(_selectedSupplier.IdSupplier).Description;
-                    ProductPrice = ProductService.GetInstance().GetBySupplierId(_selectedSupplier.IdSupplier).Price;
+
+                    var product = ProductService.GetInstance().GetBySupplierId(_selectedSupplier.IdSupplier);
+                    if (product != null)
+                    {
+                        ProductName = product.Name;
+                        ProductDescription = product.Description;
+                        ProductPrice = product.Price;
+                    }
+                    else
+                    {
+                        ProductName = string.Empty;
+                        ProductDescription = string.Empty;
+                        ProductPrice = 0;
+                    }
                 }
                 else
                 {
@@ -211,8 +222,19 @@ namespace TechTrack.ViewModel.Admin
 
         public void Delete()
         {
-            var isDeleted = SupplierService.GetInstance().Delete(SelectedSupplierId.IdSupplier);
-            LoadSuppliers();
+            var isDeleted = false; 
+            if (SelectedSupplierId != null)
+            {
+
+                if (string.IsNullOrEmpty(ProductName) && string.IsNullOrEmpty(ProductDescription) && ProductPrice == 0)
+                {
+                    isDeleted = SupplierService.GetInstance().DeleteSupplier(SelectedSupplierId.IdSupplier);
+                }
+
+                isDeleted = SupplierService.GetInstance().Delete(SelectedSupplierId.IdSupplier);
+
+                LoadSuppliers();
+            }
         }
     }
 }

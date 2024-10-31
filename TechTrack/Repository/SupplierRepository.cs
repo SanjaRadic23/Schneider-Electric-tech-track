@@ -55,7 +55,77 @@ namespace TechTrack.Repository
             }
         }
 
-        public bool Delete(int id)
+        public bool Delete(int supplierId)
+        {
+            string query = @"
+                            DECLARE
+                                v_supplier_id INTEGER := :Id;
+                                v_product_ids SYS.ODCINumberList;
+                                v_user_order_ids SYS.ODCINumberList;
+                                v_purchase_order_ids SYS.ODCINumberList;
+                            BEGIN
+                                SELECT id_product BULK COLLECT INTO v_product_ids
+                                FROM TechProducts
+                                WHERE supplier_id = v_supplier_id;
+
+                                SELECT user_order_id BULK COLLECT INTO v_user_order_ids
+                                FROM UsersOrderItems
+                                WHERE product_id IN (SELECT * FROM TABLE(v_product_ids));
+
+                                SELECT purchase_order_id BULK COLLECT INTO v_purchase_order_ids
+                                FROM PurchasesOrderItems
+                                WHERE product_id IN (SELECT * FROM TABLE(v_product_ids));
+
+                                DELETE FROM UsersOrderItems 
+                                WHERE product_id IN (SELECT * FROM TABLE(v_product_ids));
+
+                                DELETE FROM UsersOrders 
+                                WHERE id_order IN (SELECT * FROM TABLE(v_user_order_ids));
+
+                                DELETE FROM PurchasesOrderItems 
+                                WHERE product_id IN (SELECT * FROM TABLE(v_product_ids));
+
+                                DELETE FROM PurchasesOrders 
+                                WHERE id_order IN (SELECT * FROM TABLE(v_purchase_order_ids));
+
+                                DELETE FROM TechProducts 
+                                WHERE supplier_id = v_supplier_id;
+
+                                DELETE FROM Suppliers 
+                                WHERE id_supplier = v_supplier_id;
+
+                                COMMIT;
+                            EXCEPTION
+                                WHEN OTHERS THEN
+                                    ROLLBACK;
+                                    RAISE;
+                            END;";
+
+            using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
+            {
+                conn.Open();
+
+                using (IDbCommand command = conn.CreateCommand())
+                {
+                    command.CommandText = query;
+
+                    ParameterUtil.AddParameter(command, "Id", DbType.Int32);
+                    ParameterUtil.SetParameterValue(command, "Id", supplierId);
+
+                    try
+                    {
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+
+        public bool DeleteSupplier(int id)
         {
             string query = @"
                     BEGIN

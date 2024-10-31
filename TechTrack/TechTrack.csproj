@@ -15,9 +15,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Helpers\Images\logo.png" />
+    <None Remove="Helpers\Images\user.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.10" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Helpers\Images\logo.png" />
+    <Resource Include="Helpers\Images\user.png" />
   </ItemGroup>
 
 </Project>

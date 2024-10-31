@@ -16,5 +16,6 @@ namespace TechTrack.Domain.IRepository
         bool Delete(int id);
         List<Supplier> SearchSuppliers(string searchTerm);
         void Update(Supplier supplier);
+        bool DeleteSupplier(int id);
     }
 }

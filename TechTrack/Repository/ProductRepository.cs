@@ -60,7 +60,40 @@ namespace TechTrack.Repository
 
         public bool Delete(int id)
         {
-            string query = "DELETE FROM TechProducts WHERE id_product = :Id";
+            string query = @"
+                            DECLARE
+                                v_product_id INTEGER := :Id;
+                                v_user_order_ids SYS.ODCINumberList;
+                                v_purchase_order_ids SYS.ODCINumberList;
+                            BEGIN
+                                SELECT user_order_id BULK COLLECT INTO v_user_order_ids
+                                FROM UsersOrderItems
+                                WHERE product_id = v_product_id;
+
+                                SELECT purchase_order_id BULK COLLECT INTO v_purchase_order_ids
+                                FROM PurchasesOrderItems
+                                WHERE product_id = v_product_id;
+
+                                DELETE FROM UsersOrderItems 
+                                WHERE product_id = v_product_id;
+
+                                DELETE FROM UsersOrders 
+                                WHERE id_order IN (SELECT * FROM TABLE(v_user_order_ids));
+
+                                DELETE FROM PurchasesOrderItems 
+                                WHERE product_id = v_product_id;
+
+                                DELETE FROM PurchasesOrders 
+                                WHERE id_order IN (SELECT * FROM TABLE(v_purchase_order_ids));
+
+                                DELETE FROM TechProducts WHERE id_product = v_product_id;
+
+                                COMMIT;
+                            EXCEPTION
+                                WHEN OTHERS THEN
+                                    ROLLBACK;
+                                    RAISE;
+                            END;";
 
             using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
             {
@@ -73,7 +106,15 @@ namespace TechTrack.Repository
                     ParameterUtil.AddParameter(command, "Id", DbType.Int32);
                     ParameterUtil.SetParameterValue(command, "Id", id);
 
-                    return command.ExecuteNonQuery() > 0;
+                    try
+                    {
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                    catch (Exception ex)
+                    {
+
+                        return false;
+                    }
                 }
             }
         }
