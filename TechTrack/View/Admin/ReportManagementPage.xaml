@@ -1,0 +1,88 @@
+﻿<Page x:Class="TechTrack.View.Admin.ReportManagementPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TechTrack.View.Admin"
+      mc:Ignorable="d" 
+      d:DesignHeight="800" d:DesignWidth="1520"
+      Title="Report Management">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1" Grid.Column="1" Background="#DDDDDD" Focusable="True" x:Name="MainGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="1" Content="Report Management" 
+               HorizontalAlignment="Left" VerticalAlignment="Center" 
+               Margin="20 0 0 0" FontWeight="Bold" FontSize="36"/>
+
+            <StackPanel Grid.Row="1" Grid.Column="0" Background="#EFEFEF" >
+                <TextBlock Text="Reports" FontWeight="Bold" FontSize="24" Margin="0,10"/>
+                <Button Content="Best-Selling Product" Name="BestSellingButton" Margin="2,10" FontSize="18" Command="{Binding BestSellingButton}"/>
+                <Button Content="Inventory Report" Name="InventoryButton" Margin="2,10" FontSize="18" Command="{Binding InventoryButton}"/>
+                <Button Content="Orders by Period" Name="OrdersByPeriodButton" Margin="2,10" FontSize="18" Command="{Binding OrdersButton}"/>
+            </StackPanel>
+
+            <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="#F5F5F5">
+
+                <StackPanel x:Name="BestSellingProductPanel" Visibility="Collapsed">
+                    <TextBlock Text="Best-Selling Products" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
+                    <Button Content="Show Best-Selling Product" FontSize="16" Width="200" Height="40" Margin="0,0,0,20" Command="{Binding BestProductButton}"/>
+
+                    <DataGrid x:Name="BestSellingDataGrid" AutoGenerateColumns="False" FontSize="16" Margin="0,20,0,0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="*"/>
+                            <DataGridTextColumn Header="Total Sold" Binding="{Binding TotalQuantity}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+
+                <StackPanel x:Name="InventoryReportPanel" Visibility="Visible">
+                    <TextBlock Text="Inventory Report" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
+                    <DataGrid x:Name="InventoryDataGrid" AutoGenerateColumns="False" FontSize="16">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="*"/>
+                            <DataGridTextColumn Header="Quantity in Stock" Binding="{Binding Quantity}" Width="*"/>
+                            <DataGridTextColumn Header="Total Value" Binding="{Binding TotalValue}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+
+                <StackPanel x:Name="OrdersByPeriodPanel" Visibility="Collapsed">
+                    <TextBlock Text="Orders by Period" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,20">
+                        <TextBlock Text="Select Period:" FontSize="18" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="PeriodComboBox" Width="200" FontSize="16" SelectionChanged="PeriodComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Monthly"/>
+                            <ComboBoxItem Content="Quarterly"/>
+                            <ComboBoxItem Content="Yearly"/>
+                        </ComboBox>
+                    </StackPanel>
+                    <DataGrid x:Name="OrdersDataGrid" AutoGenerateColumns="False" FontSize="16">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Period" Binding="{Binding Period}" Width="*"/>
+                            <DataGridTextColumn Header="Total Orders" Binding="{Binding TotalOrders}" Width="*"/>
+                            <DataGridTextColumn Header="Total Revenue" Binding="{Binding TotalRevenue}" Width="*"/>
+                            <DataGridTextColumn Header="Average Order Value" Binding="{Binding AverageOrderValue}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

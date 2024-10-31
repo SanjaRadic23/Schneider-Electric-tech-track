@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -136,19 +137,6 @@ namespace TechTrack.ViewModel.Admin
         {
             if (AddProducts.Count > 0)
             {
-                // Provera da li ima dovoljno svih proizvoda pre kreiranja korisničke porudžbine
-                foreach (var product in AddProducts)
-                {
-                    var qua = ProductService.GetInstance().GetById(product.IdProduct).Quantity;
-                    int.TryParse(AdminManagesOrdersPage.QuantityTextBox.Text, out int quantity);
-
-                    if (qua - quantity < 0)
-                    {
-                        MessageBox.Show($"The product {product.Name} is out of stock.");
-                        return;  
-                    }
-                }
-
                 UserOrder userOrder = new UserOrder
                 {
                     CreationDate = DateTime.Now,
@@ -164,17 +152,21 @@ namespace TechTrack.ViewModel.Admin
 
                     UserOrderItem userOrderItem = new UserOrderItem
                     {
-                        UserOrderId = userOrder.IdOrder, 
+                        UserOrderId = userOrder.IdOrder,
                         ProductId = product.IdProduct,
                         Quantity = quantity,
                         TotalPrice = product.Price * quantity
                     };
 
-                    UserOrderItemService.GetInstance().Add(userOrderItem);
-
-                    var p = ProductService.GetInstance().GetById(product.IdProduct);
-                    p.Quantity -= quantity; 
-                    ProductService.GetInstance().Update(p);
+                    try
+                    {
+                        UserOrderItemService.GetInstance().Add(userOrderItem);
+                    }
+                    catch (OracleException ex)
+                    {
+                        MessageBox.Show("We do not have enough products in stock.");
+                        return;
+                    }
                 }
 
                 AddProducts.Clear();

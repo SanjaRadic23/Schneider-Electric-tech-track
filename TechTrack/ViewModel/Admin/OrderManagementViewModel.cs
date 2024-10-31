@@ -139,12 +139,6 @@ namespace TechTrack.ViewModel.Admin
         {
             if (AddProducts.Count > 0)
             {
-                foreach (var product in AddProducts)
-                {
-                    var qua = ProductService.GetInstance().GetById(product.IdProduct).Quantity;
-                    int.TryParse(OrderManagementPage.QuantityTextBox.Text, out int quantity);
-                }
-
                 PurchaseOrder purchaseOrder = new PurchaseOrder
                 {
                     CreationDate = DateTime.Now,
@@ -167,10 +161,6 @@ namespace TechTrack.ViewModel.Admin
                     };
 
                     PurchaseOrderItemService.GetInstance().Add(purchaseOrderItem);
-
-                    var p = ProductService.GetInstance().GetById(product.IdProduct);
-                    p.Quantity += quantity;
-                    ProductService.GetInstance().Update(p);
                 }
 
                 AddProducts.Clear();

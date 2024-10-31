@@ -30,6 +30,7 @@ namespace TechTrack.View.Admin
             UserAccount = userAccount;
             ProductManagementPage = new ProductManagementPage(this, userAccount);
             mainFrame.Navigate(ProductManagementPage);
+            Username.Content = UserAccount.Username;
 
         }
 
@@ -55,7 +56,13 @@ namespace TechTrack.View.Admin
 
         private void ReportPageClick(object sender, RoutedEventArgs e)
         {
+            ReportManagementPage reportManagementPage = new ReportManagementPage(this, UserAccount);
+            mainFrame.Navigate(reportManagementPage);
+        }
 
+        private void LogOutClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

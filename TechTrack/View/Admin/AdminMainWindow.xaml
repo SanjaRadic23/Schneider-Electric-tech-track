@@ -16,12 +16,12 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="7*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.Column="0" Grid.Row="0" Height="177" Width="177"></Image>
+        <Image Source="../../Helpers/Images/logo.png" Grid.Column="0" Grid.Row="0" Height="180" Width="350" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill"></Image>
         <Button Grid.Column="1" Grid.Row="0" BorderThickness="0" Height="100" Width="150" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 30 20 0">
             <Button.Content>
                 <StackPanel Orientation="Vertical">
                     <Grid Width="60" Height="60">
-
+                        <Image Source="../../Helpers/Images/user.png" Grid.Column="0" Grid.Row="0"  HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill"></Image>
                     </Grid>
                     <Label x:Name="Username" FontSize="18" HorizontalAlignment="Center"/>
                 </StackPanel>
@@ -64,10 +64,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Margin="0 20 0 0"  Grid.Column="0" Height="60" Width="150" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button Margin="0 20 0 0"  Grid.Column="0" Height="60" Width="150" VerticalAlignment="Center" HorizontalAlignment="Center" Click="LogOutClick">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                           
                             <Label Content="Log Out" FontSize="20"></Label>
                         </StackPanel>
                     </Button.Content>
