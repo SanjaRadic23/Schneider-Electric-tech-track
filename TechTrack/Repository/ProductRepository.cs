@@ -13,6 +13,7 @@ namespace TechTrack.Repository
 {
     public class ProductRepository : IProductRepository
     {
+        public delegate bool ProductFilterDelegate(Product product);
         public static ProductRepository GetInstance()
         {
             return App._serviceProvider.GetRequiredService<ProductRepository>();
@@ -366,6 +367,23 @@ namespace TechTrack.Repository
                     command.ExecuteNonQuery();
                 }
             }
+        }
+
+        public List<Product> FilterByPriceRange(decimal minPrice, decimal maxPrice, ProductFilterDelegate filter)
+        {
+            return GetAll().Where(product => filter(product)).ToList();
+        }
+        public List<Product> GetProductsInPriceRange(decimal minPrice, decimal maxPrice)
+        {
+            return FilterByPriceRange(minPrice, maxPrice, product => product.Price >= minPrice && product.Price <= maxPrice);
+        }
+        public List<Product> GetProductsByName(string name)
+        {
+            return FilterByPriceRange(decimal.MinValue, decimal.MaxValue, product => product.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+        }
+        public List<Product> GetAvailableProducts()
+        {
+            return FilterByPriceRange(decimal.MinValue, decimal.MaxValue, product => product.Quantity > 0);
         }
     }
 }
