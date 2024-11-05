@@ -216,6 +216,46 @@ BEGIN
     WHERE id_product = :NEW.product_id;
 END;
 
+CREATE OR REPLACE NONEDITIONABLE PROCEDURE AddSupplier(
+    p_id_supplier IN NUMBER,
+    p_name IN VARCHAR2,
+    p_phone_number IN VARCHAR2,
+    p_email IN VARCHAR2,
+    p_address IN VARCHAR2
+) AS
+BEGIN
+    SAVEPOINT before_insert;
+
+    -- Provera da ime sadrži samo slova (A-Z, a-z)
+    IF NOT REGEXP_LIKE(p_name, '^[A-Za-z ]+$') THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Name can only contain letters and spaces.');
+    END IF;
+
+    -- Provera da email bude u formatu nesto@nesto.com
+    IF NOT REGEXP_LIKE(p_email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$') THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Email must be in the format something@something.com');
+    END IF;
+
+    -- Provera da broj telefona ima 9 ili 10 cifara
+    IF NOT REGEXP_LIKE(p_phone_number, '^[0-9]{9,10}$') THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Phone number must be 9 or 10 digits long.');
+    END IF;
+
+    -- Unos podataka u tabelu Suppliers
+    INSERT INTO Suppliers (id_supplier, name, phone_number, email, address)
+    VALUES (p_id_supplier, p_name, p_phone_number, p_email, p_address);
+
+    -- Potvrda transakcije
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Supplier added successfully.');
+
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK TO before_insert;
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+        RAISE;
+END;
+
 
 
 
