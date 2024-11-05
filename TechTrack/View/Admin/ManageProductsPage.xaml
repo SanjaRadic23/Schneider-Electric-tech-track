@@ -38,9 +38,10 @@
                     <Button x:Name="ManageProductButton" Content="Manage Products" Width="200" Height="45" Margin="0 0 10 0" BorderThickness="0" VerticalAlignment="Center" FontSize="18" Click="ManageProductButton_Click" ></Button>
                 </StackPanel>
             </Border>
-            <TextBox Name="searchTxtBox" Grid.Row="1" Grid.Column="0" Height="30" FontSize="20" Margin="10 0 5 0"></TextBox>
-            <Button Grid.Column="1" Grid.Row="1" Content="Search" Command="{Binding SearchButton}" FontSize="20" Height="30" Width="80" HorizontalAlignment="Left"></Button>
-            <Button Grid.Column="1" Grid.Row="1" Content="Delete" Command="{Binding DeleteButton}" FontSize="20" Height="30" Width="80" HorizontalAlignment="Right" Margin="0 0 5 0"></Button>
+            <TextBox Name="searchTxtBox" Grid.Row="1" Grid.Column="0" Height="30" FontSize="20" Width="120" Margin="10 0 5 0" HorizontalAlignment="Left"></TextBox>
+            <Button Grid.Column="0" Grid.Row="1" Content="Search" Command="{Binding SearchButton}" FontSize="20" Height="30" Width="80" Margin="0 0 50 0" HorizontalAlignment="Center"></Button>
+            <Button Grid.Column="0" Grid.Row="1" Content="Availabe" Command="{Binding AvailabeButton}" FontSize="20" Height="30" Width="80" HorizontalAlignment="Center" Margin="132 0 5 0"></Button>
+            <Button Grid.Column="0" Grid.Row="1" Content="Delete" Command="{Binding DeleteButton}" FontSize="20" Height="30" Width="80" HorizontalAlignment="Right" Margin="0 0 5 0"></Button>
             <DataGrid x:Name="ProductsDataGrid"  SelectedItem="{Binding SelectedProductId}" SelectedValuePath="Id" ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserAddRows="False" Margin="10">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Product Name" Binding="{Binding Name}" />
@@ -79,6 +80,15 @@
                     SelectedItem="{Binding SelectedSupplierId}"/>       
                 <Button x:Name="SubmitProductButton" Command="{Binding SubmitCommand}" FontSize="20" Content="Submit" Width="200" HorizontalAlignment="Left" Height="40" Margin="0 10 0 0" />
             </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                <ComboBox x:Name="MinPriceComboBox" Width="100" Height="30" Margin="20 0 0 0"
+                  ItemsSource="{Binding PriceOptions}" 
+                  SelectedItem="{Binding SelectedMinPrice}"  />
+                <ComboBox x:Name="MaxPriceComboBox" Width="100" Height="30" Margin="20 0 0 0"
+                  ItemsSource="{Binding MaxPriceOptions}" 
+                  SelectedItem="{Binding SelectedMaxPrice}"  />
+                <Button Content="Filter" Command="{Binding FilterByPriceCommand}" Margin="20 0 0 0" Width="100" Height="30" FontSize="20" />
+             </StackPanel>
         </Grid>
     </Grid>
 </Page>

@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using TechTrack.Domain.IRepository;
 using TechTrack.Domain.Model;
 using TechTrack.Helpers;
@@ -25,8 +26,7 @@ namespace TechTrack.Repository
             int nextId = NextId();
             supplier.IdSupplier = nextId;
 
-            string query = "INSERT INTO Suppliers (id_supplier, name, phone_number, email, address) " +
-                           "VALUES (:Id, :Name, :PhoneNumber, :Email, :Address)";
+            string procedureName = "AddSupplier";
 
             using (IDbConnection conn = DatabaseConncectionPooling.GetConnection())
             {
@@ -34,23 +34,35 @@ namespace TechTrack.Repository
 
                 using (IDbCommand command = conn.CreateCommand())
                 {
-                    command.CommandText = query;
+                    command.CommandText = procedureName;
+                    command.CommandType = CommandType.StoredProcedure;
 
-                    ParameterUtil.AddParameter(command, "Id", DbType.Int32);
-                    ParameterUtil.AddParameter(command, "Name", DbType.String);
-                    ParameterUtil.AddParameter(command, "PhoneNumber", DbType.String);
-                    ParameterUtil.AddParameter(command, "Email", DbType.String);
-                    ParameterUtil.AddParameter(command, "Address", DbType.String);
+                    // Dodavanje parametara proceduri
+                    ParameterUtil.AddParameter(command, "p_id_supplier", DbType.Int32);
+                    ParameterUtil.AddParameter(command, "p_name", DbType.String);
+                    ParameterUtil.AddParameter(command, "p_phone_number", DbType.String);
+                    ParameterUtil.AddParameter(command, "p_email", DbType.String);
+                    ParameterUtil.AddParameter(command, "p_address", DbType.String);
 
                     command.Prepare();
 
-                    ParameterUtil.SetParameterValue(command, "Id", supplier.IdSupplier);
-                    ParameterUtil.SetParameterValue(command, "Name", supplier.Name);
-                    ParameterUtil.SetParameterValue(command, "PhoneNumber", supplier.PhoneNumber);
-                    ParameterUtil.SetParameterValue(command, "Email", supplier.Email);
-                    ParameterUtil.SetParameterValue(command, "Address", supplier.Address);
+                    ParameterUtil.SetParameterValue(command, "p_id_supplier", supplier.IdSupplier);
+                    ParameterUtil.SetParameterValue(command, "p_name", supplier.Name);
+                    ParameterUtil.SetParameterValue(command, "p_phone_number", supplier.PhoneNumber);
+                    ParameterUtil.SetParameterValue(command, "p_email", supplier.Email);
+                    ParameterUtil.SetParameterValue(command, "p_address", supplier.Address);
 
-                    command.ExecuteNonQuery();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        MessageBox.Show("Supplier added successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show($"Error adding supplier: {ex.Message}");
+                        
+                    }
                 }
             }
         }

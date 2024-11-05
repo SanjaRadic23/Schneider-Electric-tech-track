@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechTrack.Domain.Model;
+using static TechTrack.Repository.ProductRepository;
 
 namespace TechTrack.Domain.IRepository
 {
@@ -18,5 +19,9 @@ namespace TechTrack.Domain.IRepository
         List<Product> Search(string searchTerm);
         void Update(Product product);
         Product? GetBySupplierId(int Id);
+        List<Product> FilterByPriceRange(decimal minPrice, decimal maxPrice, ProductFilterDelegate filter);
+        List<Product> GetProductsInPriceRange(decimal minPrice, decimal maxPrice);
+        List<Product> GetProductsByName(string name);
+        List<Product> GetAvailableProducts();
     }
 }

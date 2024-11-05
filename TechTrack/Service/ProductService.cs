@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TechTrack.Domain.IRepository;
 using TechTrack.Domain.Model;
+using static TechTrack.Repository.ProductRepository;
 
 namespace TechTrack.Service
 {
@@ -55,6 +56,26 @@ namespace TechTrack.Service
         public Product? GetBySupplierId(int Id)
         {
             return ProductRepository.GetBySupplierId(Id);
+        }
+
+        public List<Product> FilterByPriceRange(decimal minPrice, decimal maxPrice, ProductFilterDelegate filter)
+        {
+            return ProductRepository.FilterByPriceRange(minPrice, maxPrice, filter);
+        }
+
+        public List<Product> GetProductsInPriceRange(decimal minPrice, decimal maxPrice)
+        {
+            return ProductRepository.FilterByPriceRange(minPrice, maxPrice, product => product.Price >= minPrice && product.Price <= maxPrice);
+        }
+
+        public List<Product> GetProductsByName(string name)
+        {
+            return ProductRepository.FilterByPriceRange(decimal.MinValue, decimal.MaxValue, product => product.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public List<Product> GetAvailableProducts()
+        {
+            return ProductRepository.FilterByPriceRange(decimal.MinValue, decimal.MaxValue, product => product.Quantity>0);
         }
     }
 }

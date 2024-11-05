@@ -152,18 +152,24 @@ namespace TechTrack.ViewModel.Admin
 
             var a = supplier;
 
-            var s = SupplierService.GetInstance().GetById(supplier.IdSupplier);
+            if (a != null)
+            {
+                var s = SupplierService.GetInstance().GetById(supplier.IdSupplier);
 
-            Product product = new Product();
-            product.Name = ProductName;
-            product.Description = ProductDescription;
-            product.Quantity = 0;
-            product.Price = ProductPrice;
-            product.SupplierId = s.IdSupplier;
+                if (s != null)
+                {
+                    Product product = new Product();
+                    product.Name = ProductName;
+                    product.Description = ProductDescription;
+                    product.Quantity = 0;
+                    product.Price = ProductPrice;
+                    product.SupplierId = s.IdSupplier;
 
-            ProductService.GetInstance().Add(product);
+                    ProductService.GetInstance().Add(product);
 
-            LoadSuppliers();
+                    LoadSuppliers();
+                }
+            }
 
         }
     }
